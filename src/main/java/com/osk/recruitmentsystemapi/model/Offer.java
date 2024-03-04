@@ -1,4 +1,4 @@
-package com.osk.recruitmentsystemapi;
+package com.osk.recruitmentsystemapi.model;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,8 +1,9 @@
-package com.osk.recruitmentsystemapi;
+package com.osk.recruitmentsystemapi.controller;
 
+import com.osk.recruitmentsystemapi.repository.OfferRepository;
+import com.osk.recruitmentsystemapi.model.Offer;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
