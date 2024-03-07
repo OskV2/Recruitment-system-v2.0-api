@@ -10,7 +10,7 @@ import lombok.*;
 public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String name;
     private String description;
     private String requirements;
