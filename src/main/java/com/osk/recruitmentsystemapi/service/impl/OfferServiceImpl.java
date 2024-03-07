@@ -48,7 +48,6 @@ public class OfferServiceImpl implements OfferService {
         }
     }
 
-
     @Override
     public boolean deleteOffer(Long id) {
         Offer offer = offerRepository.findById(id).get();

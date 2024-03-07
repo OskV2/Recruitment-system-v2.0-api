@@ -34,5 +34,4 @@ public class OfferController {
         return offerService.deleteOffer(id);
     }
 
-
 }
