@@ -19,7 +19,6 @@ public interface ApplicationService {
 
     boolean restoreApplication(Long id);  //  Function for Admin to restore App to status = 1 which means that Application is new.
                                           //  Can be used when Admin rejects application by mistake or something.
-
     Application editApplication(Long id, Application app);  // Function for Admin to add interview date if application was accepted before
 
     boolean deleteApplication(Long id);  //  This function deletes application from database. Admin can use it only if app was rejected before

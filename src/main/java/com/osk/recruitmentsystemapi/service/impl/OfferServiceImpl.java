@@ -1,7 +1,9 @@
 package com.osk.recruitmentsystemapi.service.impl;
 
+import com.osk.recruitmentsystemapi.repository.ApplicationRepository;
 import com.osk.recruitmentsystemapi.repository.OfferRepository;
 import com.osk.recruitmentsystemapi.model.Offer;
+import com.osk.recruitmentsystemapi.model.Application;
 import com.osk.recruitmentsystemapi.service.OfferService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
+    private final ApplicationRepository applicationRepository;
 
     @Override
     public List<Offer> getAllOffers() {
@@ -51,6 +54,9 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public boolean deleteOffer(Long id) {
         Offer offer = offerRepository.findById(id).get();
+        List<Application> applications =  applicationRepository.getApplicationsForSpecificOffer(id);  //  This line will find all applications for this specific offer
+                                                                                                      //  So those applications will be deleted with offer, because there is no point of keeping them on database, when offer doesn't exist
+        applications.forEach(application -> applicationRepository.delete(application));
         offerRepository.delete(offer);
         return true;
     }
