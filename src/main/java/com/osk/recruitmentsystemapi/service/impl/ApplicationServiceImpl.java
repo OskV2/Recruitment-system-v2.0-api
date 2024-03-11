@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -27,15 +27,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public Application addApplication(Application app, MultipartFile file) {
-
-
         try {
             Application newApp = applicationRepository.save(app);
 
             Path root = Paths.get(uploadPath + "/" + newApp.getId());
             System.out.println("Creating directory: " + root);
             Files.createDirectory(root);
-
             Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
 
             return newApp;
@@ -43,10 +40,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             System.out.println(e.getMessage());
             throw new RuntimeException("Could not create upload folder!");
         }
-
-//        BeanUtils.copyProperties(app, newApp);
-//        applicationRepository.save(newApp);
-
     }
 
     @Override
@@ -98,8 +91,26 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public boolean deleteApplication(Long id) {
-        Application application = applicationRepository.findById(id).get();
-        applicationRepository.delete(application);
-        return true;
+        try {
+            Application application = applicationRepository.findById(id).get();
+            Path folderToDelete = Paths.get(uploadPath + "/" + application.getId());
+
+            System.out.println(folderToDelete);
+            Files.walk(folderToDelete)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            throw new RuntimeException("Failed to delete file or directory: " + path, e);
+                        }
+                    });
+
+            applicationRepository.delete(application);
+            return true;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Could not delete application.");
+        }
     }
 }
