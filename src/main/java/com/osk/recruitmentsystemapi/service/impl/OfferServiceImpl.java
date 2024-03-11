@@ -44,6 +44,10 @@ public class OfferServiceImpl implements OfferService {
             existingOffer.setDescription(offer.getDescription());
             existingOffer.setRequirements(offer.getRequirements());
             existingOffer.setBenefits(offer.getBenefits());
+            existingOffer.setSalary(offer.getSalary());
+            existingOffer.setContract(offer.getContract());
+            existingOffer.setJobType(offer.getJobType());
+            existingOffer.setLocation(offer.getLocation());
 
             return offerRepository.save(existingOffer);
         } else {
