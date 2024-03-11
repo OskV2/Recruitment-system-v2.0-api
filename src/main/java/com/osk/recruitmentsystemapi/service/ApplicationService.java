@@ -1,13 +1,14 @@
 package com.osk.recruitmentsystemapi.service;
 
 import com.osk.recruitmentsystemapi.model.Application;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 
 public interface ApplicationService {
 
-    Application addApplication(Application app);
+    Application addApplication(Application app, MultipartFile file);
 
     List<Application> getAllApplications();
 

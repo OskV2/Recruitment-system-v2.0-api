@@ -1,9 +1,12 @@
 package com.osk.recruitmentsystemapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osk.recruitmentsystemapi.model.Application;
 import com.osk.recruitmentsystemapi.service.ApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,8 +17,15 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     @PostMapping("/applications")
-    public Application addApplication(@RequestBody Application app) {
-        return applicationService.addApplication(app);
+    public Application addApplication(@RequestParam("file") MultipartFile file, @RequestParam("app") String applicationJson) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Application application;
+        try {
+            application = objectMapper.readValue(applicationJson, Application.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid JSON format for application data", e);
+        }
+        return applicationService.addApplication(application, file);
     }
 
     @GetMapping("/applications")

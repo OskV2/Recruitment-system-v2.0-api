@@ -1,29 +1,52 @@
 package com.osk.recruitmentsystemapi.service.impl;
 
 import com.osk.recruitmentsystemapi.model.Application;
-import com.osk.recruitmentsystemapi.model.Offer;
 import com.osk.recruitmentsystemapi.repository.ApplicationRepository;
 import com.osk.recruitmentsystemapi.service.ApplicationService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+
 @Service
+@RequiredArgsConstructor
 public class ApplicationServiceImpl implements ApplicationService {
 
     private final ApplicationRepository applicationRepository;
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Override
-    public Application addApplication(Application app) {
-        Application newApp = new Application();
-        BeanUtils.copyProperties(app, newApp);
-        applicationRepository.save(newApp);
-        return newApp;
+    public Application addApplication(Application app, MultipartFile file) {
+
+
+        try {
+            Application newApp = applicationRepository.save(app);
+
+            Path root = Paths.get(uploadPath + "/" + newApp.getId());
+            System.out.println("Creating directory: " + root);
+            Files.createDirectory(root);
+
+            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
+
+            return newApp;
+        } catch(IOException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Could not create upload folder!");
+        }
+
+//        BeanUtils.copyProperties(app, newApp);
+//        applicationRepository.save(newApp);
+
     }
 
     @Override
